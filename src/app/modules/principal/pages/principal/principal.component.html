@@ -1,10 +1,76 @@
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Nueva medición
-</button>
-
 <div>
+  <div class="d-flex justify-content-between">
+    <!--<button mat-raised-button color="primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Nueva medición
+    </button>-->
 
+    <div>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <i class="fa-solid fa-circle-plus"></i>
+        Nueva medición
+      </button>
+    </div>
+
+    <mat-form-field>
+      <mat-label>Buscar</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Buscar">
+    </mat-form-field>
+  </div>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource!" matSort>
+
+      <!-- Columnas de la tabla -->
+      <ng-container matColumnDef="nic">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> NIC </th>
+        <td mat-cell *matCellDef="let element"> {{element.nic}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaMedicion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha de Medición </th>
+        <td mat-cell *matCellDef="let element"> {{element.fechaMedicion}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="kwMedido">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Kilowatts Medidos </th>
+        <td mat-cell *matCellDef="let element"> {{element.kwMedido}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="personaMedicion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Persona que realizó la medición </th>
+        <td mat-cell *matCellDef="let element"> {{element.personaMedicion}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="duenoCuenta">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Dueño de la cuenta </th>
+        <td mat-cell *matCellDef="let element"> {{element.duenoCuenta}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="impuestoExtra">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Impuesto Extra </th>
+        <td mat-cell *matCellDef="let element"> {{element.impuestoExtra}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="d-flex">
+            <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editarMedicion(element.id)">
+              <i class="fa-solid fa-pencil"></i>
+              Editar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="eliminarMedicion(element.id)">
+              <i class="fa-solid fa-trash"></i>
+              Eliminar
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>
 
 <!-- Modal -->
@@ -13,7 +79,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Formulario de medición</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="limpiarFormulario()"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="formLogin" (ngSubmit)="registrarMedicion()">
@@ -21,8 +87,13 @@
           <fieldset class="row">
             <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
               <label for="nic" class="form-label">NIC</label>
-              <input formControlName="nic" [class.is-invalid]="formLoginControls.nic.errors && formLoginControls.nic.touched" type="text" class="form-control" id="nic">
-              <div id="nicHelp" class="invalid-feedback">Ingrese un nombre de nic.</div>
+              <input formControlName="nic" [class.is-invalid]="formLoginControls.nic.errors && formLoginControls.nic.touched" type="number" class="form-control" id="nic">
+              <div id="nicHelp" class="invalid-feedback" *ngIf="formLoginControls.nic.errors && formLoginControls.nic.touched">
+                <div *ngIf="formLoginControls.nic.errors.required">El NIC es requerido.</div>
+                <div *ngIf="formLoginControls.nic.errors.pattern">El NIC debe contener solo números.</div>
+                <div *ngIf="formLoginControls.nic.errors.minlength">El NIC debe tener al menos 6 dígitos.</div>
+                <div *ngIf="formLoginControls.nic.errors.maxlength">El NIC no puede tener más de 10 dígitos.</div>
+              </div>
             </div>
 
             <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
@@ -33,14 +104,20 @@
 
             <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
               <label for="kwMedido" class="form-label">Kilowatts medidos</label>
-              <input formControlName="kwMedido" [class.is-invalid]="formLoginControls.kwMedido.errors && formLoginControls.kwMedido.touched" type="text" class="form-control" id="kwMedido">
-              <div id="kwMedidoHelp" class="invalid-feedback">Ingrese la cantidad de kilowatts medidos.</div>
+              <input formControlName="kwMedido" [class.is-invalid]="formLoginControls.kwMedido.errors && formLoginControls.kwMedido.touched" type="number" class="form-control" id="kwMedido">
+              <div id="kwMedidoHelp" class="invalid-feedback" *ngIf="formLoginControls.kwMedido.errors && formLoginControls.kwMedido.touched">
+                <div *ngIf="formLoginControls.kwMedido.errors.required">Ingrese la cantidad de kilowatts medidos.</div>
+                <div *ngIf="formLoginControls.kwMedido.errors.pattern">El valor debe ser un número entero o decimal.</div>
+              </div>
             </div>
 
             <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
               <label for="personaMedicion" class="form-label">Persona que realizó la medición</label>
               <input formControlName="personaMedicion" [class.is-invalid]="formLoginControls.personaMedicion.errors && formLoginControls.personaMedicion.touched" type="text" class="form-control" id="personaMedicion">
-              <div id="personaMedicionHelp" class="invalid-feedback">Ingrese el nombre de la persona que realizó la medición.</div>
+              <div id="personaMedicionHelp" class="invalid-feedback" *ngIf="formLoginControls.personaMedicion.errors && formLoginControls.personaMedicion.touched">
+                <div *ngIf="formLoginControls.personaMedicion.errors.required">Ingrese el nombre de la persona que realizó la medición.</div>
+                <div *ngIf="formLoginControls.personaMedicion.errors.pattern">El nombre solo puede contener letras y espacios.</div>
+              </div>
             </div>
           </fieldset>
           <hr>
@@ -48,21 +125,32 @@
             <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
               <label for="duenoCuenta" class="form-label">Dueño de la cuenta</label>
               <input formControlName="duenoCuenta" [class.is-invalid]="formLoginControls.duenoCuenta.errors && formLoginControls.duenoCuenta.touched" type="text" class="form-control" id="duenoCuenta">
-              <div id="duenoCuentaHelp" class="invalid-feedback">Ingrese el nombre de la persona que realizó la medición.</div>
+              <div id="duenoCuentaHelp" class="invalid-feedback" *ngIf="formLoginControls.duenoCuenta.errors && formLoginControls.duenoCuenta.touched">
+                <div *ngIf="formLoginControls.duenoCuenta.errors.required">Ingrese el nombre del dueño de la cuenta.</div>
+                <div *ngIf="formLoginControls.duenoCuenta.errors.pattern">El nombre solo puede contener letras y espacios.</div>
+              </div>
             </div>
 
             <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
               <label for="impuestoExtra" class="form-label">Impuesto Extra</label>
-              <input formControlName="impuestoExtra" [class.is-invalid]="formLoginControls.impuestoExtra.errors && formLoginControls.impuestoExtra.touched" type="text" class="form-control" id="impuestoExtra">
-              <div id="impuestoExtraHelp" class="invalid-feedback">Ingrese el impuesto extra.</div>
+              <input formControlName="impuestoExtra" [class.is-invalid]="formLoginControls.impuestoExtra.errors && formLoginControls.impuestoExtra.touched" type="number" class="form-control" id="impuestoExtra">
+              <div id="impuestoExtraHelp" class="invalid-feedback" *ngIf="formLoginControls.impuestoExtra.errors && formLoginControls.impuestoExtra.touched">
+                <div *ngIf="formLoginControls.impuestoExtra.errors.required">Ingrese el impuesto extra.</div>
+                <div *ngIf="formLoginControls.impuestoExtra.errors.pattern">El valor debe ser un número entero o decimal.</div>
+              </div>
             </div>
           </fieldset>
-          <button type="submit" class="btn btn-success w-100">Guardar</button>
+          <button type="submit" class="btn btn-success w-100">
+            <i class="fa-solid fa-floppy-disk"></i>
+            Guardar
+          </button>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cerrar-modal-medicion" (click)="limpiarFormulario()">
+          <i class="fa-solid fa-circle-xmark"></i>
+          Cerrar
+        </button>
       </div>
     </div>
   </div>

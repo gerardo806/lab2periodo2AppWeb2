@@ -7,9 +7,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 export const registroConfig: ApplicationConfig = {
   providers: [
-    importProvidersFrom(CommonModule, FormsModule, ReactiveFormsModule),
+    importProvidersFrom(FormsModule, ReactiveFormsModule),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(registroRoutes),
-    RegistroComponent
+    provideRouter(registroRoutes)
   ],
 };

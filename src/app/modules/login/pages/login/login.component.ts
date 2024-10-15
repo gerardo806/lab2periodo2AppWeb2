@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router } from '@angular/router';
 import { AuthService } from '../../../principal/services/auth.service';
 import {LowdbService} from '../../../principal/services/db/lowdb.service';
+import {SessionUserService} from '../../services/session-user.service';
+import {AlertsService} from '../../../registro/services/alerts/alerts.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,10 @@ export class LoginComponent {
     private fb: FormBuilder,
     private router: Router,
     private authServices: AuthService,
-    private lowdbService: LowdbService) {
+    private lowdbService: LowdbService,
+    private sessionUser: SessionUserService,
+    private alerts: AlertsService
+  ) {
     this.formLogin = this.fb.group({
       user: ['', Validators.required],
       password: ['', Validators.required]
@@ -44,9 +49,10 @@ export class LoginComponent {
       const user = users.find(u => u.name === credenciales.user && u.password === credenciales.password);
 
       if (!user) {
+        this.alerts.showError('Usuario o contraseña incorrectos');
         this.authServices.logout();
-        alert('usuario o contraseña invalido :(');
       } else {
+        this.sessionUser.setNombre = user.name || '';
         this.authServices.login();
         if (this.authServices.isAuthenticated()) {
           this.router.navigate(["/home/principal"]).catch(err => {

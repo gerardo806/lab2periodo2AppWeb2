@@ -8,7 +8,7 @@ import {LoginRoutingModule} from './login.routes';
   declarations: [],
   imports: [
     LoginComponent,
-    CommonModule,
+    //CommonModule,
     FormsModule,
     ReactiveFormsModule,
     LoginRoutingModule
