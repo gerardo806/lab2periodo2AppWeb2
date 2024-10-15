@@ -1,0 +1,70 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Nueva medición
+</button>
+
+<div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Formulario de medición</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formLogin" (ngSubmit)="registrarMedicion()">
+          <input type="hidden" id="medicionId" formControlName="id">
+          <fieldset class="row">
+            <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
+              <label for="nic" class="form-label">NIC</label>
+              <input formControlName="nic" [class.is-invalid]="formLoginControls.nic.errors && formLoginControls.nic.touched" type="text" class="form-control" id="nic">
+              <div id="nicHelp" class="invalid-feedback">Ingrese un nombre de nic.</div>
+            </div>
+
+            <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
+              <label for="fechaMedicion" class="form-label">Fecha de medición</label>
+              <input formControlName="fechaMedicion" [class.is-invalid]="formLoginControls.fechaMedicion.errors && formLoginControls.fechaMedicion.touched" type="date" class="form-control" id="fechaMedicion">
+              <div id="fechaMedicionHelp" class="invalid-feedback">Ingrese un fecha de medición.</div>
+            </div>
+
+            <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
+              <label for="kwMedido" class="form-label">Kilowatts medidos</label>
+              <input formControlName="kwMedido" [class.is-invalid]="formLoginControls.kwMedido.errors && formLoginControls.kwMedido.touched" type="text" class="form-control" id="kwMedido">
+              <div id="kwMedidoHelp" class="invalid-feedback">Ingrese la cantidad de kilowatts medidos.</div>
+            </div>
+
+            <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
+              <label for="personaMedicion" class="form-label">Persona que realizó la medición</label>
+              <input formControlName="personaMedicion" [class.is-invalid]="formLoginControls.personaMedicion.errors && formLoginControls.personaMedicion.touched" type="text" class="form-control" id="personaMedicion">
+              <div id="personaMedicionHelp" class="invalid-feedback">Ingrese el nombre de la persona que realizó la medición.</div>
+            </div>
+          </fieldset>
+          <hr>
+          <fieldset class="row">
+            <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
+              <label for="duenoCuenta" class="form-label">Dueño de la cuenta</label>
+              <input formControlName="duenoCuenta" [class.is-invalid]="formLoginControls.duenoCuenta.errors && formLoginControls.duenoCuenta.touched" type="text" class="form-control" id="duenoCuenta">
+              <div id="duenoCuentaHelp" class="invalid-feedback">Ingrese el nombre de la persona que realizó la medición.</div>
+            </div>
+
+            <div class="mb-3 col-lg-6 col-md-12 col-sm-12">
+              <label for="impuestoExtra" class="form-label">Impuesto Extra</label>
+              <input formControlName="impuestoExtra" [class.is-invalid]="formLoginControls.impuestoExtra.errors && formLoginControls.impuestoExtra.touched" type="text" class="form-control" id="impuestoExtra">
+              <div id="impuestoExtraHelp" class="invalid-feedback">Ingrese el impuesto extra.</div>
+            </div>
+          </fieldset>
+          <button type="submit" class="btn btn-success w-100">Guardar</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
